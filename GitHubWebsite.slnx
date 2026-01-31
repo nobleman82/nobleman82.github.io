@@ -1,3 +1,7 @@
 <Solution>
+  <Folder Name="/.gitgub/" />
+  <Folder Name="/.gitgub/workflows/">
+    <File Path="GitHubWebsite/.github/workflows/deploy.yml" />
+  </Folder>
   <Project Path="GitHubWebsite/GitHubWebsite.csproj" />
 </Solution>
