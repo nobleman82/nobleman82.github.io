@@ -1,0 +1,32 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # Update auf v4 für bessere Stabilität
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x' # Hier ist dein .NET 10!
+
+      - name: Publish .NET Core Project
+        run: dotnet publish -c Release -o release
+
+      - name: Add .nojekyll
+        run: touch release/wwwroot/.nojekyll
+
+      # Fix für das Blazor-Routing (kopiert index.html zu 404.html)
+      - name: Create 404 page for routing
+        run: cp release/wwwroot/index.html release/wwwroot/404.html
+
+      - name: Commit and Push to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: release/wwwroot
+          branch: gh-pages
