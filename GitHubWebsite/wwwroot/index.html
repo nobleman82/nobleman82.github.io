@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GitHubWebsite</title>
+    <title>Nobleman82 Portfolio</title>
     <base href="/" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap-icons.css" />    
@@ -34,6 +34,13 @@
     <script src="js/youtubePlayer.js"></script>
 
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        Blazor.start({
+            loadBootResource: (type, name, defaultUri) => {
+                return defaultUri;
+            }
+        });
+    </script>
 </body>
 
 </html>
