@@ -1,39 +1,127 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">GitHubWebsite</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@inject Services.MusicService MusicService
+@implements IDisposable
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
+<nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+    <div class="container-fluid">
+        @* BRAND *@
+        <a class="navbar-brand fw-bold fs-3" href="">
+            NOBLEMAN<span style="color: #6f42c1;">82</span>
+        </a>
+
+        @* PLAYER-CONTROLS *@
+        <div class="ms-auto d-flex align-items-center">
+            @if (!string.IsNullOrEmpty(MusicService.CurrentPlaylistId))
+            {
+                <div class="player-controls-nav me-4 d-flex align-items-center bg-light rounded-pill px-3 py-1 shadow-sm animate__animated animate__fadeIn">
+                    <div class="visualizer me-2">
+                        <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
+                        <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
+                        <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
+                    </div>
+
+                    <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.TogglePlay">
+                        <i class="bi @(MusicService.IsPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill") fs-4"></i>
+                    </button>
+
+                    <button class="btn btn-sm btn-link p-0 text-muted" @onclick="MusicService.Stop">
+                        <i class="bi bi-stop-circle fs-5"></i>
+                    </button>
+                </div>
+            }
+
+            @* STABILISIERTES IFRAME: Es bleibt permanent im DOM, um Permission-Fehler zu vermeiden *@
+            <div class="alibi-player-wrapper">
+                <iframe src="@GetStablePlayerUrl()"
+                        frameborder="0"
+                        allow="autoplay; encrypted-media">
+                </iframe>
+            </div>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
+
+        @* NAV LINKS *@
+        <div class="collapse navbar-collapse justify-content-center">
+            <div class="navbar-nav gap-4">
+                <NavLink class="nav-link fw-semibold" href="" Match="NavLinkMatch.All">Home</NavLink>
+                <NavLink class="nav-link fw-semibold" href="projects">Portfolio</NavLink>
+                <NavLink class="nav-link fw-semibold" href="music">Music</NavLink>
+                <NavLink class="nav-link fw-semibold" href="blog">Blog</NavLink>
+                <NavLink class="nav-link fw-semibold" href="contact">Contact</NavLink>
+            </div>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+
+        <NavLink href="contact" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm d-none d-lg-block"
+                 style="background-color: #6f42c1; border: none; color: white;">
+            Let's Talk
+        </NavLink>
+    </div>
+</nav>
+
+<style>
+    /* Versteckt, aber für den Browser "aktiv", um Throttling zu verhindern */
+    .alibi-player-wrapper {
+        position: fixed;
+        top: -500px;
+        left: -500px;
+        width: 10px;
+        height: 10px;
+        overflow: hidden;
+        opacity: 0.01;
+    }
+
+    .player-controls-nav {
+        border: 1px solid rgba(111, 66, 193, 0.2);
+    }
+
+    .visualizer {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 15px;
+    }
+
+    .v-bar {
+        width: 3px;
+        background-color: #6f42c1;
+        height: 4px;
+        transition: 0.3s;
+    }
+
+        .v-bar.playing {
+            animation: dance 0.8s infinite ease-in-out alternate;
+        }
+
+        .v-bar:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .v-bar:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+    @@keyframes dance {
+        from {
+            height: 4px;
+        }
+
+        to {
+            height: 14px;
+        }
+    }
+</style>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    private string GetStablePlayerUrl()
     {
-        collapseNavMenu = !collapseNavMenu;
+        // Wenn nicht gespielt wird, laden wir eine leere Seite, statt das IFrame zu entfernen
+        if (string.IsNullOrEmpty(MusicService.CurrentPlaylistId) || !MusicService.IsPlaying)
+        {
+            return "about:blank";
+        }
+
+        // origin Parameter ist wichtig gegen die Permission-Fehler in lokalen Umgebungen
+        return $"https://www.youtube.com/embed/videoseries?list={MusicService.CurrentPlaylistId}&autoplay=1&enablejsapi=1&origin={System.Net.WebUtility.UrlEncode("https://localhost")}";
     }
+
+    protected override void OnInitialized() => MusicService.OnChange += StateHasChanged;
+    public void Dispose() => MusicService.OnChange -= StateHasChanged;
 }

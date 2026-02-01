@@ -1,0 +1,146 @@
+﻿@page "/projects"
+@inject HttpClient Http
+
+<div class="container-fluid content-padding animate__animated animate__fadeIn">
+    <div class="row mb-5 ps-5">
+        <div class="col-12">
+            <h5 class="text-muted fw-bold">Portfolio</h5>
+            <h2 class="display-4 fw-bolder text-gradient">Meine Software-Projekte</h2>
+            <p class="text-muted fs-5">Eine Übersicht meiner Arbeiten, live von GitHub synchronisiert.</p>
+        </div>
+    </div>
+
+    @if (repos == null)
+    {
+        <div class="text-center mt-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="text-muted mt-2">Lade Repositories...</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4 ps-5 pe-5">
+            @foreach (var repo in repos)
+            {
+                <div class="col-md-6 col-xl-4 col-xxl-3">
+                    <div class="project-card h-100">
+                        <div class="card-image-wrapper">
+                            @* Strategie: Wir nutzen Nobleman82 + repo.Name + preview.png.
+                                Der onerror-Handler springt ein, wenn die Datei (noch) nicht existiert.
+                            *@
+                            <img src="@($"https://raw.githubusercontent.com/Nobleman82/{repo.Name}/master/preview.png")"
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/600x300/1a2a6c/ffffff?text=@(repo.Name.Replace(".", "+"))'"
+                                 alt="Projekt Vorschau" />
+                        </div>
+
+                        <div class="card-body-custom p-4 d-flex flex-column h-100">
+                            <h3 class="repo-name">@(repo.Name == "nobleman82.github.io" ? "Persönliches Portfolio" : repo.Name)</h3>
+
+                            <p class="repo-desc flex-grow-1">
+                                @(string.IsNullOrEmpty(repo.Description) ? "Ein spannendes Software-Projekt auf GitHub. Schau dir den Code direkt an!" : repo.Description)
+                            </p>
+
+                            <div class="card-tags mt-3 mb-3 d-flex align-items-center justify-content-between">
+                                @if (!string.IsNullOrEmpty(repo.Language))
+                                {
+                                    <span class="badge-lang">
+                                        <i class="@GetIcon(repo.Language)"></i> @repo.Language
+                                    </span>
+                                }
+
+                                <div class="popularity-indicator" title="GitHub Stars">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                    <span class="score-value">@repo.Stargazers_Count</span>
+                                    <span class="score-label text-muted ms-1" style="font-size: 0.7rem; text-transform: uppercase;">Popularität</span>
+                                </div>
+                            </div>
+
+                            <a href="@repo.Html_Url" target="_blank" class="btn btn-primary btn-sm rounded-pill w-100">
+                                Code auf GitHub <i class="bi bi-github ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .badge-lang {
+        background: rgba(26, 42, 108, 0.1); /* Zarter blauer Hintergrund */
+        color: #1a2a6c;
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-stars {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #5c6b89;
+        margin-left: 10px;
+    }
+
+    .popularity-indicator {
+        background: #f8f9fa;
+        padding: 4px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+    }
+
+    .score-value {
+        font-weight: 800;
+        color: #1a2a6c;
+    }
+
+    .text-warning {
+        filter: drop-shadow(0 0 2px rgba(255, 193, 7, 0.5));
+    }
+</style>
+
+@code {
+    public class GitHubRepo
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Html_Url { get; set; }
+        public string Language { get; set; }
+        public int Stargazers_Count { get; set; }
+    }
+
+    private GitHubRepo[] repos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Hinweis: GitHub API könnte ohne User-Agent Header im Browser manchmal Probleme machen,
+            // aber HttpClient in Blazor WASM regelt das meist über den Browser-Kontext.
+            repos = await Http.GetFromJsonAsync<GitHubRepo[]>("https://api.github.com/users/Nobleman82/repos");
+
+            // Optional: Sortierung nach Sternen oder Name
+            if (repos != null) repos = repos.OrderByDescending(r => r.Stargazers_Count).ToArray();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fehler beim Laden: {ex.Message}");
+        }
+    }
+
+    private string GetIcon(string language) => language?.ToLower() switch
+    {
+        "c#" => "bi-hash",
+        "javascript" => "bi-filetype-js",
+        "css" => "bi-palette",
+        "html" => "bi-code-slash",
+        "python" => "bi-terminal",
+        _ => "bi-journal-code"
+    };
+}

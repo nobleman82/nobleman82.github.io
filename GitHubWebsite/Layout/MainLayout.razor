@@ -1,16 +1,26 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
+@inject NavigationManager NavManager
+
+<div class="master-wrapper">
+    <div class="app-window shadow-lg">
+        <header class="window-header">
+            <NavMenu />
+        </header>
+
+        @* overflow: visible ist hier kritisch, damit das Bild in den Footer ragen kann *@
+        <main class="window-content" style="background: white; overflow: visible !important;">
+            <div class="page-animation h-100" @key="NavManager.Uri">
+                @Body
+            </div>
+        </main>
+
+        @* Wir geben dem Footer eine Klasse, um ihn steuerbar zu machen *@
+        <footer class="window-footer home-footer-fix">
+            <div class="d-flex justify-content-start gap-3 ps-4 pb-3">
+                <i class="bi bi-facebook social-icon"></i>
+                <i class="bi bi-instagram social-icon"></i>
+                <i class="bi bi-linkedin social-icon"></i>
+            </div>
+        </footer>
     </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
 </div>
