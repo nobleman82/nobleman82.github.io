@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+﻿name: Deploy to GitHub Pages
 
 on:
   push:
@@ -7,34 +7,48 @@ on:
 jobs:
   deploy-to-github-pages:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
+    steps:
+      # 1️⃣ Repository auschecken
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ .NET 10 installieren
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
-      - name: Publish .NET Core Project
-        run: dotnet publish GitHubWebsite/GitHubWebsite.csproj -c Release -o release /p:BlazorEnableCompression=false /p:PublishTrimmed=false
+      # 3️⃣ Blazor WASM publish
+      #    - Compression MUSS aus für GitHub Pages
+      - name: Publish Blazor WebAssembly
+        run: |
+          dotnet publish GitHubWebsite/GitHubWebsite.csproj \
+            -c Release \
+            -o release \
+            /p:BlazorWebAssemblyEnableCompression=false \
+            /p:PublishTrimmed=false
 
-      # FEHLERSUCHE: Wir lassen uns im Log anzeigen, was im Ordner wirklich drin ist
-      - name: Debug Folder Structure
-        run: ls -R release/wwwroot/_framework
+      # 4️⃣ Debug: prüfen, ob Runtime-Dateien korrekt da sind
+      - name: Debug _framework folder
+        run: |
+          echo "=== _framework contents ==="
+          ls -lah release/wwwroot/_framework
 
+      # 5️⃣ .nojekyll anlegen (damit _framework nicht entfernt wird!)
       - name: Add .nojekyll
         run: touch release/wwwroot/.nojekyll
 
+      # 6️⃣ 404.html für Client-Side Routing
       - name: Create 404 page for routing
         run: cp release/wwwroot/index.html release/wwwroot/404.html
 
-      # Wir nutzen hier eine alternative Einstellung, um sicherzustellen, 
-      # dass wirklich ALLE Dateien (auch .json) mitgenommen werden.
-      - name: Commit and Push to GitHub Pages
+      # 7️⃣ Deploy nach gh-pages
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: release/wwwroot
           branch: gh-pages
+          folder: release/wwwroot
           clean: true
           single-commit: true
           git-config-name: GitHub Action
