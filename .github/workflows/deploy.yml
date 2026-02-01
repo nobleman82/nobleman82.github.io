@@ -15,19 +15,25 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      # Hier wurde der Parameter /p:BlazorEnableCompression=false hinzugefügt
+      # Publish-Befehl: Wir erzwingen, dass keine Kompression stattfindet, 
+      # damit GitHub Pages die Dateien (inkl. boot.json) korrekt ausliefert.
       - name: Publish .NET Core Project
-        run: dotnet publish GitHubWebsite/GitHubWebsite.csproj -c Release -o release /p:BlazorEnableCompression=false
+        run: dotnet publish GitHubWebsite/GitHubWebsite.csproj -c Release -o release /p:BlazorEnableCompression=false /p:PublishTrimmed=false
 
+      # .nojekyll ist essenziell, damit GitHub den Ordner "_framework" nicht ignoriert
       - name: Add .nojekyll
         run: touch release/wwwroot/.nojekyll
 
+      # Workaround für Blazor-Routing auf GitHub Pages
       - name: Create 404 page for routing
         run: cp release/wwwroot/index.html release/wwwroot/404.html
 
+      # Deployment: Wir stellen sicher, dass der gesamte wwwroot-Inhalt 
+      # inklusive aller Unterordner (wie _framework) gepusht wird.
       - name: Commit and Push to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: release/wwwroot
           branch: gh-pages
           clean: true
+          single-commit: true # Hilft, Inkonsistenzen im gh-pages Branch zu vermeiden
