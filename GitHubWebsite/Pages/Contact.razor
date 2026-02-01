@@ -1,0 +1,136 @@
+﻿@page "/contact"
+
+<div class="container py-5 animate__animated animate__fadeIn">
+    <div class="row g-5">
+        @* Linke Seite: Support & Kontakt-SVG *@
+        <div class="col-lg-5">
+            <h1 class="fw-bold display-5 mb-4" style="color: #6f42c1;">Let's Talk!</h1>
+            <p class="lead text-muted mb-5">
+                Hast du ein spannendes Projekt im Kopf oder möchtest du einfach nur fachsimpeln? Ich freue mich auf deine Nachricht!
+            </p>
+           
+
+            @* SUPPORT / SPENDEN BEREICH *@
+            <div class="support-card p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border: 1px dashed #6f42c1;">
+                <h5 class="fw-bold mb-3"><i class="bi bi-heart-fill text-danger me-2"></i>Support my Work</h5>
+                <p class="small text-muted mb-4">
+                    Wenn dir meine Musik oder meine Projekte gefallen, kannst du mich hier mit einer kleinen Spende unterstützen. Vielen Dank!
+                </p>
+                <div class="d-grid gap-2">
+                    <a href="https://www.paypal.me/nobleman82" target="_blank" class="btn btn-outline-dark rounded-pill py-2 fw-bold">
+                        <i class="bi bi-paypal me-2 color-primary"></i> via PayPal
+                    </a>
+                    <a href="https://buymeacoffee.com/nobleman82" target="_blank" class="btn btn-warning rounded-pill py-2 fw-bold text-dark">
+                        <i class="bi bi-cup-hot-fill me-2"></i> Buy me a coffee
+                    </a>
+                </div>
+            </div>
+
+            @* YOUTUBE ALS EINZIGER SOCIAL LINK *@
+            <div class="mt-5">
+                <h6 class="fw-bold text-uppercase small text-muted mb-3">Besuche mich auf</h6>
+                <a href="https://www.youtube.com/@@mariotuerk5671" target="_blank" class="social-btn youtube">
+                    <i class="bi bi-youtube me-2"></i> YouTube Kanal
+                </a>
+            </div>
+        </div>
+
+        @* Rechte Seite: Das Formular *@
+        <div class="col-lg-7">
+            <div class="glass-card p-5 shadow-lg rounded-5 border-0 bg-white bg-opacity-75 backdrop-blur">
+                @* Formspree Integration: action und method sind hier entscheidend *@
+                <form action="https://formspree.io/f/mykpeaop" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Dein Name</label>
+                            <input type="text" name="name" class="form-control form-control-lg rounded-3 border-0 shadow-sm bg-light" placeholder="Name" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">E-Mail Adresse</label>
+                            @* _replyto sorgt dafür, dass du in GMX direkt auf "Antworten" klicken kannst *@
+                            <input type="email" name="_replyto" class="form-control form-control-lg rounded-3 border-0 shadow-sm bg-light" placeholder="E-Mail" required />
+                        </div>
+                        <div class="col-12 mt-4">
+                            <label class="form-label fw-semibold">Betreff</label>
+                            <select name="subject" class="form-select form-select-lg rounded-3 border-0 shadow-sm bg-light">
+                                <option selected>Projektanfrage</option>
+                                <option>Feedback zur Musik</option>
+                                <option>Zusammenarbeit</option>
+                                <option>Sonstiges</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <label class="form-label fw-semibold">Nachricht</label>
+                            <textarea name="message" class="form-control rounded-3 border-0 shadow-sm bg-light" rows="5" placeholder="Deine Nachricht an mich..." required></textarea>
+                        </div>
+
+                        @* Optional: Verstecktes Feld für eine "Erfolgsseite" nach dem Absenden *@
+                        @* <input type="hidden" name="_next" value="https://deine-website.de/thanks" /> *@
+
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-lg py-3 fw-bold"
+                                    style="background: linear-gradient(45deg, #6f42c1, #1a2a6c); border: none;">
+                                <i class="bi bi-send-fill me-2"></i> Nachricht absenden
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .icon-circle {
+        width: 45px;
+        height: 45px;
+        background: rgba(111, 66, 193, 0.1);
+        color: #6f42c1;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .social-btn.youtube {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background: #FF0000;
+        color: white;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        font-weight: bold;
+    }
+
+        .social-btn.youtube:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+            color: white;
+        }
+
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.2);
+        background-color: #fff;
+    }
+
+    .backdrop-blur {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .color-primary {
+        color: #0070ba;
+    }
+    /* PayPal Blue */
+</style>
+
+@code {
+    private void HandleSubmit()
+    {
+        // Logik für Formspree oder API hier einfügen
+        Console.WriteLine("Kontaktanfrage erhalten.");
+    }
+}

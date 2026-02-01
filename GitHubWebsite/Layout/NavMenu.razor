@@ -13,28 +13,39 @@
             @if (!string.IsNullOrEmpty(MusicService.CurrentPlaylistId))
             {
                 <div class="player-controls-nav me-4 d-flex align-items-center bg-light rounded-pill px-3 py-1 shadow-sm animate__animated animate__fadeIn">
-                    <div class="visualizer me-2">
+                    <div class="visualizer me-3">
                         <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
                         <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
                         <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
                     </div>
 
+                    @* Zurück *@
+                    <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Previous" title="Vorheriger Titel">
+                        <i class="bi bi-skip-start-fill fs-5"></i>
+                    </button>
+
+                    @* Play / Pause *@
                     <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.TogglePlay">
                         <i class="bi @(MusicService.IsPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill") fs-4"></i>
                     </button>
 
-                    <button class="btn btn-sm btn-link p-0 text-muted" @onclick="MusicService.Stop">
+                    @* Vorwärts *@
+                    <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Next" title="Nächster Titel">
+                        <i class="bi bi-skip-end-fill fs-5"></i>
+                    </button>
+
+                    @* Stop *@
+                    <button class="btn btn-sm btn-link p-0 text-muted border-start ps-2" @onclick="MusicService.Stop" title="Stoppen">
                         <i class="bi bi-stop-circle fs-5"></i>
                     </button>
                 </div>
             }
 
-            @* STABILISIERTES IFRAME: Es bleibt permanent im DOM, um Permission-Fehler zu vermeiden *@
+            @* WICHTIG: Das div mit id="youtube-player" ist der Anker für die JavaScript API. 
+               Die API ersetzt dieses div automatisch durch das IFrame.
+            *@
             <div class="alibi-player-wrapper">
-                <iframe src="@GetStablePlayerUrl()"
-                        frameborder="0"
-                        allow="autoplay; encrypted-media">
-                </iframe>
+                <div id="youtube-player"></div>
             </div>
         </div>
 
@@ -57,19 +68,22 @@
 </nav>
 
 <style>
-    /* Versteckt, aber für den Browser "aktiv", um Throttling zu verhindern */
+    /* Der Player muss im DOM bleiben, wird aber unsichtbar aus dem Sichtfeld geschoben */
     .alibi-player-wrapper {
-        position: fixed;
-        top: -500px;
-        left: -500px;
-        width: 10px;
-        height: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
         overflow: hidden;
-        opacity: 0.01;
+        opacity: 0.1; /* Ganz leicht sichtbar für den Browser-Check */
+        pointer-events: none;
+        z-index: -1;
     }
 
     .player-controls-nav {
         border: 1px solid rgba(111, 66, 193, 0.2);
+        z-index: 1000;
     }
 
     .visualizer {
@@ -107,21 +121,23 @@
             height: 14px;
         }
     }
+
+    /* Hover Effekt für die kleinen Buttons */
+    .player-controls-nav button:hover i {
+        color: #6f42c1 !important;
+        transform: scale(1.1);
+        transition: 0.2s;
+    }
 </style>
 
 @code {
-    private string GetStablePlayerUrl()
+    protected override void OnInitialized()
     {
-        // Wenn nicht gespielt wird, laden wir eine leere Seite, statt das IFrame zu entfernen
-        if (string.IsNullOrEmpty(MusicService.CurrentPlaylistId) || !MusicService.IsPlaying)
-        {
-            return "about:blank";
-        }
-
-        // origin Parameter ist wichtig gegen die Permission-Fehler in lokalen Umgebungen
-        return $"https://www.youtube-nocookie.com/embed/videoseries?list={MusicService.CurrentPlaylistId}&autoplay=1&enablejsapi=1"; 
+        MusicService.OnChange += StateHasChanged;
     }
 
-    protected override void OnInitialized() => MusicService.OnChange += StateHasChanged;
-    public void Dispose() => MusicService.OnChange -= StateHasChanged;
+    public void Dispose()
+    {
+        MusicService.OnChange -= StateHasChanged;
+    }
 }
