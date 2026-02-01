@@ -14,7 +14,8 @@ body {
 .master-wrapper {
     width: 65vw; /* Nutzt 98% der verfügbaren Viewport-Breite */
     max-width: 1600; /* Entferne die 1600px Sperre komplett! */
-    height: 75vh; /* Etwas mehr Höhe gibt dem Design mehr Luft */
+    /*height: 75vh; /* Etwas mehr Höhe gibt dem Design mehr Luft */
+    flex-direction: column;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -24,7 +25,7 @@ body {
 .app-window {
     background-color: #ffffff !important;
     border-radius: 40px;
-    height: 100%;
+    height: 75vh;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -167,3 +168,18 @@ h1, h2, h3, h4, h5, p, span, .nav-link {
 #blazor-error-ui {
     display: none !important;
 }
+/* Die Links innerhalb der Box stylen */
+.legal-links-inside {
+    z-index: 100; /* Immer ÜBER dem Bild */
+}
+
+    .legal-links-inside a {
+        font-size: 0.8rem;
+        color: #6c757d !important;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .legal-links-inside a:hover {
+            color: #6f42c1 !important;
+        }
