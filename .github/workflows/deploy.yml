@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ master ] # Geändert von main auf master
+    branches: [ master ]
 
 jobs:
   deploy-to-github-pages:
@@ -15,9 +15,9 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      # Hier sagen wir .NET, dass es im Unterordner suchen soll
+      # Hier wurde der Parameter /p:BlazorEnableCompression=false hinzugefügt
       - name: Publish .NET Core Project
-        run: dotnet publish GitHubWebsite/GitHubWebsite.csproj -c Release -o release
+        run: dotnet publish GitHubWebsite/GitHubWebsite.csproj -c Release -o release /p:BlazorEnableCompression=false
 
       - name: Add .nojekyll
         run: touch release/wwwroot/.nojekyll
@@ -30,3 +30,4 @@ jobs:
         with:
           folder: release/wwwroot
           branch: gh-pages
+          clean: true
