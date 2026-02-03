@@ -44,7 +44,7 @@
             @* WICHTIG: Das div mit id="youtube-player" ist der Anker für die JavaScript API. 
                Die API ersetzt dieses div automatisch durch das IFrame.
             *@
-            <div class="alibi-player-wrapper">
+            <div class="alibi-player-wrapper" suppress-error-id="true">
                 <div id="youtube-player"></div>
             </div>
         </div>
@@ -133,11 +133,31 @@
 @code {
     protected override void OnInitialized()
     {
-        MusicService.OnChange += StateHasChanged;
+        try
+        {
+            if (MusicService != null)
+            {
+                MusicService.OnChange += HandleChange;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"NavMenu: MusicService Bindungsfehler: {ex.Message}");
+        }
     }
+
+    // Eigene Methode statt StateHasChanged direkt, für besseres Debugging
+    private void HandleChange() => InvokeAsync(StateHasChanged);
 
     public void Dispose()
     {
-        MusicService.OnChange -= StateHasChanged;
+        try
+        {
+            if (MusicService != null)
+            {
+                MusicService.OnChange -= HandleChange;
+            }
+        }
+        catch { /* Lautlos beim Schließen */ }
     }
 }

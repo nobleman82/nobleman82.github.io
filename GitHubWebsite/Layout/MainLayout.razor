@@ -7,28 +7,24 @@
             <NavMenu />
         </header>
 
-        @* overflow: visible ist hier kritisch, damit das Bild in den Footer ragen kann *@
-        <main class="window-content" style="background: white; overflow: visible !important;">
+        @* Wichtig: overflow: visible für den 3D-Effekt von Mario *@
+        <main class="window-content">
             <div class="page-animation h-100" @key="NavManager.Uri">
                 @Body
             </div>
         </main>
 
-        @* Wir geben dem Footer eine Klasse, um ihn steuerbar zu machen *@
         <footer class="window-footer home-footer-fix">
-            <div class="d-flex justify-content-between align-items-center px-4 pb-3">            
-                              
-            </div>          
+            <div class="d-flex justify-content-between align-items-center px-4 pb-3">
+                @* Hier könnten Social Icons o.ä. stehen *@             
+            </div>
         </footer>
-
-        
     </div>
-    @* RECHTLICHE LINKS: Jetzt außerhalb der weißen Box *@
+
+    @* Diese Links liegen jetzt garantiert unter der Box *@
     <div class="external-legal-links">
         <NavLink class="legal-link-item" href="impressum">Impressum</NavLink>
         <span class="divider">|</span>
         <NavLink class="legal-link-item" href="datenschutz">Datenschutz</NavLink>
     </div>
 </div>
-
-     
