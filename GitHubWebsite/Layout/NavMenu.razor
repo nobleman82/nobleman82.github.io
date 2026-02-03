@@ -3,89 +3,67 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
     <div class="container-fluid">
-        @* BRAND *@
+        @* BRAND - Jetzt bündig durch CSS-Klasse *@
         <a class="navbar-brand fw-bold fs-3" href="">
             NOBLEMAN<span style="color: #6f42c1;">82</span>
         </a>
 
-        @* PLAYER-CONTROLS *@
-        <div class="ms-auto d-flex align-items-center">
-            @if (!string.IsNullOrEmpty(MusicService.CurrentPlaylistId))
-            {
-                <div class="player-controls-nav me-4 d-flex align-items-center bg-light rounded-pill px-3 py-1 shadow-sm animate__animated animate__fadeIn">
-                    <div class="visualizer me-3">
-                        <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
-                        <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
-                        <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
-                    </div>
+        @* HAMBURGER BUTTON FÜR MOBILE *@
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    @* Zurück *@
-                    <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Previous" title="Vorheriger Titel">
-                        <i class="bi bi-skip-start-fill fs-5"></i>
-                    </button>
-
-                    @* Play / Pause *@
-                    <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.TogglePlay">
-                        <i class="bi @(MusicService.IsPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill") fs-4"></i>
-                    </button>
-
-                    @* Vorwärts *@
-                    <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Next" title="Nächster Titel">
-                        <i class="bi bi-skip-end-fill fs-5"></i>
-                    </button>
-
-                    @* Stop *@
-                    <button class="btn btn-sm btn-link p-0 text-muted border-start ps-2" @onclick="MusicService.Stop" title="Stoppen">
-                        <i class="bi bi-stop-circle fs-5"></i>
-                    </button>
-                </div>
-            }
-
-            @* WICHTIG: Das div mit id="youtube-player" ist der Anker für die JavaScript API. 
-               Die API ersetzt dieses div automatisch durch das IFrame.
-            *@
-            <div class="alibi-player-wrapper" suppress-error-id="true">
-                <div id="youtube-player"></div>
-            </div>
-        </div>
-
-        @* NAV LINKS *@
-        <div class="collapse navbar-collapse justify-content-center">
-            <div class="navbar-nav gap-4">
+        @* COLLAPSIBLE CONTENT *@
+        <div class="collapse navbar-collapse" id="navbarContent">
+            @* NAV LINKS *@
+            <div class="navbar-nav mx-auto gap-lg-4">
                 <NavLink class="nav-link fw-semibold" href="" Match="NavLinkMatch.All">Home</NavLink>
                 <NavLink class="nav-link fw-semibold" href="projects">Portfolio</NavLink>
                 <NavLink class="nav-link fw-semibold" href="music">Music</NavLink>
                 <NavLink class="nav-link fw-semibold" href="blog">Blog</NavLink>
                 <NavLink class="nav-link fw-semibold" href="contact">Contact</NavLink>
             </div>
+
+            @* PLAYER & CTA *@
+            <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                @if (!string.IsNullOrEmpty(MusicService.CurrentPlaylistId))
+                {
+                    <div class="player-controls-nav d-flex align-items-center bg-light rounded-pill px-3 py-1 shadow-sm animate__animated animate__fadeIn">
+                        <div class="visualizer me-3">
+                            <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
+                            <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
+                            <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
+                        </div>
+
+                        <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Previous" title="Vorheriger">
+                            <i class="bi bi-skip-start-fill fs-5"></i>
+                        </button>
+
+                        <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.TogglePlay">
+                            <i class="bi @(MusicService.IsPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill") fs-4"></i>
+                        </button>
+
+                        <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Next" title="Nächster">
+                            <i class="bi bi-skip-end-fill fs-5"></i>
+                        </button>
+                    </div>
+                }
+
+                <NavLink href="contact" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm d-lg-block nav-contact-btn">
+                    Let's Talk
+                </NavLink>
+            </div>
         </div>
 
-        <NavLink href="contact" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm d-none d-lg-block"
-                 style="background-color: #6f42c1; border: none; color: white;">
-            Let's Talk
-        </NavLink>
+        @* Hidden Player Anchor *@
+        <div class="alibi-player-wrapper" suppress-error-id="true">
+            <div id="youtube-player"></div>
+        </div>
     </div>
 </nav>
 
 <style>
-    /* Der Player muss im DOM bleiben, wird aber unsichtbar aus dem Sichtfeld geschoben */
-    .alibi-player-wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        opacity: 0.1; /* Ganz leicht sichtbar für den Browser-Check */
-        pointer-events: none;
-        z-index: -1;
-    }
-
-    .player-controls-nav {
-        border: 1px solid rgba(111, 66, 193, 0.2);
-        z-index: 1000;
-    }
-
+    /* Lokale Ergänzungen für den Player */
     .visualizer {
         display: flex;
         align-items: flex-end;
@@ -111,7 +89,6 @@
         .v-bar:nth-child(3) {
             animation-delay: 0.4s;
         }
-
     @@keyframes dance {
         from {
             height: 4px;
@@ -122,42 +99,31 @@
         }
     }
 
-    /* Hover Effekt für die kleinen Buttons */
-    .player-controls-nav button:hover i {
-        color: #6f42c1 !important;
-        transform: scale(1.1);
-        transition: 0.2s;
+    .alibi-player-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        opacity: 0.1;
+        pointer-events: none;
+        z-index: -1;
     }
 </style>
 
 @code {
     protected override void OnInitialized()
     {
-        try
-        {
-            if (MusicService != null)
-            {
-                MusicService.OnChange += HandleChange;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"NavMenu: MusicService Bindungsfehler: {ex.Message}");
-        }
+        try { if (MusicService != null) MusicService.OnChange += HandleChange; }
+        catch (Exception ex) { Console.WriteLine($"NavMenu Fehler: {ex.Message}"); }
     }
 
-    // Eigene Methode statt StateHasChanged direkt, für besseres Debugging
     private void HandleChange() => InvokeAsync(StateHasChanged);
 
     public void Dispose()
     {
-        try
-        {
-            if (MusicService != null)
-            {
-                MusicService.OnChange -= HandleChange;
-            }
-        }
-        catch { /* Lautlos beim Schließen */ }
+        try { if (MusicService != null) MusicService.OnChange -= HandleChange; }
+        catch { }
     }
 }
