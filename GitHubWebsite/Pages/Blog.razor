@@ -1,0 +1,249 @@
+﻿@page "/blog"
+@page "/blog/{PostId}"
+@using Markdig
+@using System.Text
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<div class="container-fluid px-lg-5 py-5 animate__animated animate__fadeIn">
+    @if (selectedPost == null)
+    {
+        @* HEADER *@
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <h6 class="text-uppercase ls-2 color-purple fw-bold">Journal & Insights</h6>
+                <h1 class="display-4 fw-bold mb-3">Hinter den Kulissen meiner <span class="text-gradient">Projekte</span></h1>
+                <p class="lead text-muted">Ein technisches Logbuch über Software und Hardware.</p>
+            </div>
+        </div>
+
+        @* GRID ANSICHT *@
+        <div class="row g-4">
+            @if (BlogPosts == null)
+            {
+                @for (int i = 0; i < 3; i++)
+                {
+                    <div class="col-md-6 col-xl-4">
+                        <div class="blog-card shadow-sm border-0 placeholder-glow">
+                            <div class="placeholder col-12" style="height: 220px;"></div>
+                            <div class="p-4"><span class="placeholder col-6"></span><h4 class="placeholder col-12"></h4></div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                @foreach (var post in BlogPosts)
+                {
+                    <div class="col-md-6 col-xl-4">
+                        <div class="blog-card h-100 shadow-sm border-0" @onclick="() => NavigateToPost(post.Id)">
+                            <div class="blog-image-wrapper" style="background-image: url('@post.ImageUrl')">
+                                <div class="blog-category">@post.Category</div>
+                            </div>
+                            <div class="blog-content p-4">
+                                <div class="blog-meta mb-2 small text-muted">
+                                    <span><i class="bi bi-calendar3"></i> @post.Date.ToShortDateString()</span>
+                                    <span class="ms-3"><i class="bi bi-clock"></i> @post.ReadTime Min.</span>
+                                </div>
+                                <h4 class="fw-bold mb-3">@post.Title</h4>
+                                <p class="text-muted small mb-4">@post.Excerpt</p>
+                                <button class="btn btn-outline-primary rounded-pill btn-sm px-4">Weiterlesen</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        @* DYNAMISCHER MARKDOWN LESER *@
+        <div class="row justify-content-center animate__animated animate__fadeInUp">
+            <div class="col-lg-8">
+                <button class="btn btn-link text-decoration-none p-0 mb-4 color-purple fw-bold" @onclick="GoBack">
+                    <i class="bi bi-arrow-left"></i> ZURÜCK ZUR ÜBERSICHT
+                </button>
+
+                <img src="@selectedPost.ImageUrl" class="img-fluid rounded-4 mb-5 shadow-lg" style="width: 100%; height: 450px; object-fit: cover;" />
+
+                <div class="markdown-body px-2 mb-5">
+                    @((MarkupString)markdownHtml)
+                </div>
+
+                <hr class="my-5" />
+                <button class="btn btn-dark rounded-pill px-5 mb-5" @onclick="GoBack">Zur Übersicht</button>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .text-gradient {
+        background: linear-gradient(135deg, #1a2a6c 0%, #6f42c1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .color-purple {
+        color: #6f42c1;
+    }
+
+    .ls-2 {
+        letter-spacing: 2px;
+    }
+
+    .blog-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+        }
+
+    .blog-image-wrapper {
+        height: 220px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .blog-category {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: white;
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #6f42c1;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Hochwertiges Markdown & Code Styling */
+    .markdown-body {
+        line-height: 1.8;
+        font-size: 1.15rem;
+        color: #2c3e50;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+
+        .markdown-body h1, .markdown-body h2 {
+            margin-top: 2.5rem;
+            font-weight: 800;
+            color: #1a2a6c;
+        }
+
+        .markdown-body pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            overflow-x: auto;
+            border-left: 5px solid #6f42c1;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .markdown-body code {
+            background: rgba(111, 66, 193, 0.1);
+            color: #6f42c1;
+            padding: 0.2rem 0.4rem;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+</style>
+
+@code {
+    [Parameter] public string? PostId { get; set; }
+    private List<BlogPost>? BlogPosts;
+    private BlogPost? selectedPost;
+    private string markdownHtml = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        BlogPosts = new List<BlogPost>
+        {
+            new BlogPost {
+                Id = "noten-organizer",
+                Title = "NotenOrganizer: C# trifft auf Cloud-Sync",
+                Category = "Software",
+                Excerpt = "Wie ich eine performante SQLite-Datenbank mit Mega.nz synchronisiere...",
+                ImageUrl = "images/blog-noten.png",
+                MarkdownFile = "noten.md",
+                Date = new DateTime(2026, 2, 04),
+                ReadTime = 5
+            },
+            new BlogPost {
+                Id = "arduino-pedal",
+                Title = "Hardware-Hacking: Das Fußpedal",
+                Category = "Electronics",
+                Excerpt = "Vom Arduino Nano zum professionellen USB-Interface.",
+                ImageUrl = "images/blog-arduino.png",
+                MarkdownFile = "arduino.md",
+                Date = new DateTime(2026, 2, 04),
+                ReadTime = 8
+            }
+        };
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(PostId) && BlogPosts != null)
+        {
+            var post = BlogPosts.FirstOrDefault(p => p.Id == PostId);
+            if (post != null) await OpenPost(post);
+        }
+        else
+        {
+            selectedPost = null;
+        }
+    }
+
+    private void NavigateToPost(string id) => Nav.NavigateTo($"/blog/{id}");
+    private void GoBack() => Nav.NavigateTo("/blog");
+
+    private async Task OpenPost(BlogPost post)
+    {
+        selectedPost = post;
+        try
+        {
+            // UTF-8 Fix für Umlaute
+            var responseBytes = await Http.GetByteArrayAsync($"posts/{post.MarkdownFile}");
+            var markdownText = Encoding.UTF8.GetString(responseBytes);
+
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseAdvancedExtensions()
+                .UseEmojiAndSmiley()
+                .Build();
+            markdownHtml = Markdown.ToHtml(markdownText, pipeline);
+        }
+        catch (Exception ex)
+        {
+            markdownHtml = $"<h3>Fehler</h3><p>Konnte {post.MarkdownFile} nicht laden. Fehler: {ex.Message}</p>";
+        }
+    }
+
+    public class BlogPost
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Category { get; set; } = "";
+        public string Excerpt { get; set; } = "";
+        public string ImageUrl { get; set; } = "";
+        public string MarkdownFile { get; set; } = "";
+        public DateTime Date { get; set; }
+        public int ReadTime { get; set; }
+    }
+}

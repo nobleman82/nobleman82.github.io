@@ -1,0 +1,54 @@
+﻿.text-gradient {
+    background: linear-gradient(135deg, #1a2a6c 0%, #6f42c1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.color-purple {
+    color: #6f42c1;
+}
+
+.ls-2 {
+    letter-spacing: 2px;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+    .blog-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
+
+.blog-image-wrapper {
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.blog-category {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6f42c1;
+    text-transform: uppercase;
+}
+
+.blog-content h4 {
+    transition: color 0.3s;
+}
+
+.blog-card:hover h4 {
+    color: #6f42c1;
+}

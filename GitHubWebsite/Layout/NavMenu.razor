@@ -3,25 +3,25 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
     <div class="container-fluid">
-        @* BRAND - Jetzt bündig durch CSS-Klasse *@
+        @* BRAND *@
         <a class="navbar-brand fw-bold fs-3" href="">
             NOBLEMAN<span style="color: #6f42c1;">82</span>
         </a>
 
-        @* HAMBURGER BUTTON FÜR MOBILE *@
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        @* HAMBURGER BUTTON - Jetzt mit @onclick statt Daten-Attributen *@
+        <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        @* COLLAPSIBLE CONTENT *@
-        <div class="collapse navbar-collapse" id="navbarContent">
+        @* COLLAPSIBLE CONTENT - Klasse wird dynamisch durch 'collapseNavMenu' gesteuert *@
+        <div class="@NavMenuCssClass navbar-collapse" id="navbarContent">
             @* NAV LINKS *@
             <div class="navbar-nav mx-auto gap-lg-4">
-                <NavLink class="nav-link fw-semibold" href="" Match="NavLinkMatch.All">Home</NavLink>
-                <NavLink class="nav-link fw-semibold" href="projects">Portfolio</NavLink>
-                <NavLink class="nav-link fw-semibold" href="music">Music</NavLink>
-                <NavLink class="nav-link fw-semibold" href="blog">Blog</NavLink>
-                <NavLink class="nav-link fw-semibold" href="contact">Contact</NavLink>
+                <NavLink class="nav-link fw-semibold" href="" Match="NavLinkMatch.All" @onclick="CollapseMenu">Home</NavLink>
+                <NavLink class="nav-link fw-semibold" href="projects" @onclick="CollapseMenu">Portfolio</NavLink>
+                <NavLink class="nav-link fw-semibold" href="music" @onclick="CollapseMenu">Music</NavLink>
+                <NavLink class="nav-link fw-semibold" href="blog" @onclick="CollapseMenu">Blog</NavLink>
+                <NavLink class="nav-link fw-semibold" href="contact" @onclick="CollapseMenu">Contact</NavLink>
             </div>
 
             @* PLAYER & CTA *@
@@ -35,7 +35,7 @@
                             <div class="v-bar @(MusicService.IsPlaying ? "playing" : "")"></div>
                         </div>
 
-                        <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Previous" title="Vorheriger">
+                        <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Previous">
                             <i class="bi bi-skip-start-fill fs-5"></i>
                         </button>
 
@@ -43,13 +43,13 @@
                             <i class="bi @(MusicService.IsPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill") fs-4"></i>
                         </button>
 
-                        <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Next" title="Nächster">
+                        <button class="btn btn-sm btn-link p-0 text-dark me-2" @onclick="MusicService.Next">
                             <i class="bi bi-skip-end-fill fs-5"></i>
                         </button>
                     </div>
                 }
 
-                <NavLink href="contact" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm d-lg-block nav-contact-btn">
+                <NavLink href="contact" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm nav-contact-btn" @onclick="CollapseMenu">
                     Let's Talk
                 </NavLink>
             </div>
@@ -63,7 +63,7 @@
 </nav>
 
 <style>
-    /* Lokale Ergänzungen für den Player */
+    /* Deine Visualizer Styles bleiben identisch... */
     .visualizer {
         display: flex;
         align-items: flex-end;
@@ -113,6 +113,22 @@
 </style>
 
 @code {
+    private bool collapseNavMenu = true;
+
+    // Steuert die CSS-Klasse: 'collapse' versteckt es, null (keine Klasse) zeigt es in Bootstrap
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    // Schließt das Menü, wenn ein Link geklickt wird (wichtig für Mobile!)
+    private void CollapseMenu()
+    {
+        collapseNavMenu = true;
+    }
+
     protected override void OnInitialized()
     {
         try { if (MusicService != null) MusicService.OnChange += HandleChange; }
