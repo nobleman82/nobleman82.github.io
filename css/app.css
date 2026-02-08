@@ -1,0 +1,152 @@
+/* 1. GLOBALER HINTERGRUND FIX */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100dvh; /* Berücksichtigt mobile Browser-Leisten */
+    background: radial-gradient(circle at center, #1a2a6c 0%, #0a192f 100%) !important;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+/* 2. DER MASTER WRAPPER (Zentrierung) */
+.master-wrapper {
+    display: flex;
+    flex-direction: column; /* Zwingt die Links UNTER die App-Window */
+    align-items: center; /* Zentriert App-Window und Links horizontal */
+    justify-content: center;
+    width: 95vw;
+    max-width: 1600px;
+    min-height: 100dvh; /* Nutzt die volle Bildschirmhöhe */
+    padding: 20px 0;
+    margin: 0 auto;
+}
+
+/* Die Links unter dem Fenster */
+.external-legal-links {
+    margin-top: 20px; /* Abstand zum weißen Block */
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    z-index: 100;
+}
+
+.legal-link-item {
+    color: rgba(255, 255, 255, 0.7) !important; /* Dezentes Weiß auf dem blauen Grund */
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+    .legal-link-item:hover {
+        color: #ffffff !important;
+    }
+
+.divider {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+@media (min-width: 992px) {
+    .master-wrapper {
+        width: 75vw;
+    }
+}
+
+/* 3. DAS FENSTER */
+/* Sicherstellen, dass die App-Window nicht alles wegdrückt */
+.app-window {
+    background-color: #ffffff !important;
+    border-radius: 40px;
+    width: 100%;
+    /* Auf Desktop feste Höhe, auf Mobile flexibel */
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 4. GRADIENT FIX */
+.text-gradient {
+    background: linear-gradient(90deg, #1a2a6c, #6f42c1) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    display: inline-block;
+}
+
+/* 3. DAS WEISSE FENSTER */
+.app-window {
+    background: #ffffff !important;
+    border-radius: 30px;
+    width: 100%;
+    min-height: 80vh; /* Nutzt den Platz, falls Content kurz ist */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden; /* Mario wird an den runden Ecken abgeschnitten */
+}
+
+/* 4. TEXT GRADIENT FIX */
+.text-gradient {
+    background: linear-gradient(90deg, #1a2a6c, #6f42c1) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    display: inline-block;
+}
+.window-content {
+    flex: 1;
+    overflow: visible !important; /* Wichtig für Mario */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-primary {
+    /* Ein kräftigerer Blau-Violett Verlauf für Tiefe */
+    background: linear-gradient(135deg, #1a2a6c 0%, #3f51b5 50%, #6f42c1 100%) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 50px !important;
+    padding: 12px 30px !important;
+    font-weight: 600;
+    /* Der wichtige Schatten-Effekt */
+    box-shadow: 0 4px 15px rgba(26, 42, 108, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4) !important;
+        filter: brightness(1.1);
+    }
+
+.btn-outline-dark {
+    border: 2px solid #1a2a6c !important;
+    background: transparent !important;
+    color: #1a2a6c !important;
+    border-radius: 50px !important;
+    padding: 12px 30px !important;
+    font-weight: 600;
+    transition: all 0.3s ease !important;
+}
+
+    .btn-outline-dark:hover {
+        background-color: #1a2a6c !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+
+/* Spezielle Klasse für den "Let's Talk" Button oben rechts */
+.nav-contact-btn {
+    background: #6f42c1 !important;
+    color: white !important;
+    border-radius: 50px !important;
+    padding: 8px 25px !important;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(111, 66, 193, 0.2) !important;
+}

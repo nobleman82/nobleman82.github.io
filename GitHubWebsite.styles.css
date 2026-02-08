@@ -1,0 +1,194 @@
+/* /Layout/MainLayout.razor.rz.scp.css */
+.page[b-szt8s2zooy] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+main[b-szt8s2zooy] {
+    flex: 1;
+}
+
+.sidebar[b-szt8s2zooy] {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+
+.top-row[b-szt8s2zooy] {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+    .top-row[b-szt8s2zooy]  a, .top-row[b-szt8s2zooy]  .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+        text-decoration: none;
+    }
+
+    .top-row[b-szt8s2zooy]  a:hover, .top-row[b-szt8s2zooy]  .btn-link:hover {
+        text-decoration: underline;
+    }
+
+    .top-row[b-szt8s2zooy]  a:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+@media (max-width: 640.98px) {
+    .top-row[b-szt8s2zooy] {
+        justify-content: space-between;
+    }
+
+    .top-row[b-szt8s2zooy]  a, .top-row[b-szt8s2zooy]  .btn-link {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 641px) {
+    .page[b-szt8s2zooy] {
+        flex-direction: row;
+    }
+
+    .sidebar[b-szt8s2zooy] {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .top-row[b-szt8s2zooy] {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .top-row.auth[b-szt8s2zooy]  a:first-child {
+        flex: 1;
+        text-align: right;
+        width: 0;
+    }
+
+    .top-row[b-szt8s2zooy], article[b-szt8s2zooy] {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+/* /Layout/NavMenu.razor.rz.scp.css */
+/* Grundlegende Navbar Einstellungen */
+.navbar .container-fluid[b-jfr1bjlkc8] {
+    /* Standard-Padding f�r Mobile */
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    transition: padding 0.3s ease;
+}
+
+/* DESKTOP AUSRICHTUNG: Nobleman82 b�ndig mit Content */
+@media (min-width: 992px) {
+    .navbar .container-fluid[b-jfr1bjlkc8] {
+        /* Dieser Wert muss exakt deinem ps-5 oder content-padding entsprechen */
+        padding-left: 5.5rem !important;
+        padding-right: 5.5rem !important;
+    }
+}
+
+.navbar-brand[b-jfr1bjlkc8] {
+    font-size: 1.8rem; /* Etwas gr��er f�r Nobleman82 */
+    letter-spacing: -1px;
+    margin-right: 2rem;
+}
+
+/* Mobile Men� Anpassung */
+@media (max-width: 991px) {
+    .navbar-collapse[b-jfr1bjlkc8] {
+        background: white;
+        margin-top: 1rem;
+        padding: 1.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .nav-link[b-jfr1bjlkc8] {
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+}
+
+/* Button Styling */
+.nav-contact-btn[b-jfr1bjlkc8] {
+    background: linear-gradient(135deg, #1a2a6c 0%, #6f42c1 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.nav-link[b-jfr1bjlkc8] {
+    color: #333 !important;
+    transition: color 0.2s;
+}
+
+    .nav-link:hover[b-jfr1bjlkc8], .nav-link.active[b-jfr1bjlkc8] {
+        color: #6f42c1 !important;
+    }
+
+.player-controls-nav[b-jfr1bjlkc8] {
+    border: 1px solid rgba(111, 66, 193, 0.2);
+}
+/* /Pages/Blog.razor.rz.scp.css */
+.text-gradient[b-u7hap0c6f4] {
+    background: linear-gradient(135deg, #1a2a6c 0%, #6f42c1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.color-purple[b-u7hap0c6f4] {
+    color: #6f42c1;
+}
+
+.ls-2[b-u7hap0c6f4] {
+    letter-spacing: 2px;
+}
+
+.blog-card[b-u7hap0c6f4] {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+    .blog-card:hover[b-u7hap0c6f4] {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
+
+.blog-image-wrapper[b-u7hap0c6f4] {
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.blog-category[b-u7hap0c6f4] {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6f42c1;
+    text-transform: uppercase;
+}
+
+.blog-content h4[b-u7hap0c6f4] {
+    transition: color 0.3s;
+}
+
+.blog-card:hover h4[b-u7hap0c6f4] {
+    color: #6f42c1;
+}
